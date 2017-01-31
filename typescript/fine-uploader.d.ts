@@ -2133,6 +2133,13 @@ declare namespace FineUploader {
         pauseUpload(id: number): boolean;
 
         /**
+         * Remove internal reference to the associated Blob/File object.
+         * 
+         * For Blobs that are created via JavaScript in the browser, this will free up all consumed memory.
+         */
+        removeFileRef(id: number): void;
+
+        /**
          * Reset Fine Uploader
          */
         reset(): void;
