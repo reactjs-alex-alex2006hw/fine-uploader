@@ -92,3 +92,17 @@ qqMyDiv = qq(myDiv);
 // Now we can call other qq methods:
 qqMyDiv.hide();
 let children: HTMLElement[] = qqMyDiv.children(myDiv);
+
+//FineUploader's Promise Implementation
+let promise:FineUploader.PromiseOptions = new qq.Promise();
+let result = {};
+promise.failure(result);
+promise.success(result);
+promise.then(() => {
+//promise is successfully fulfilled, do something here
+}, () => {
+//promise is un-successfully fulfilled, do something here
+});
+promise.done(() => {
+//promise is fulfilled whether successful or not, do something here
+});

@@ -48,7 +48,7 @@ declare namespace FineUploader {
          * @param ResizeInfo resizeInfo : the ResizeInfo object containing all the resize values/options
          * @returns Promise : Once the resize is complete, the function must return a promise
          */
-        (resizeInfo: ResizeInfo): Promise<any>;
+        (resizeInfo: ResizeInfo): PromiseOptions;
     }
 
     /**
@@ -941,6 +941,51 @@ declare namespace FineUploader {
         ios8SafariUploads?: boolean;
     }
 
+    interface PromiseOptions {
+        /**
+         * Register callbacks from success and failure.
+         * 
+         * The promise instance that then is called on will pass any values into the provided callbacks.
+         * If success or failure have already occurred before these callbacks have been registered, then they will be called immediately after this call has been executed.
+         * Each subsequent call to then registers an additional set of callbacks.
+         * 
+         * @param Function successCallback : The function to call when the promise is successfully fulfilled
+         * @param Function failureCallback : The function to call when the promise is unsuccessfully fulfilled
+         * @return PromiseOptions : An instance of a promise
+         */
+        then(successCallback: Function, failureCallback: Function): PromiseOptions;
+
+        /**
+         * Register callbacks for success or failure.
+         * 
+         * Invoked when the promise is fulfilled regardless of the result.
+         * The promise instance that done is called on will pass any values into the provided callback.
+         * Each call to done registers an additional set of callbacks
+         * 
+         * @param Function callback : The function to call when the promise is fulfilled, successful or not.
+         * @return PromiseOptions : An instance of a promise
+         */
+        done(callback: Function): PromiseOptions;
+
+        /**
+         * Call this on a promise to indicate success. 
+         * The parameter values will depend on the situation.
+         * 
+         * @param Object param : The value to pass to the promise's success handler.
+         * @return PromiseOptions : An instance of a promise
+         */
+        success(param: any): PromiseOptions;
+
+        /**
+         * Call this on a promise to indicate failure.
+         * The parameter values will depend on the situation.
+         * 
+         * @param Object param : The value to pass to the promise's failure handler.
+         * @return PromiseOptions : An instance of a promise
+         */
+        failure(param: any): PromiseOptions;
+    }
+
 
     /* ====================================== Core Callback functions ==================================== */
 
@@ -964,7 +1009,7 @@ declare namespace FineUploader {
          * @param number id : The current file's id
          * @param string name : The current file's name
          */
-        (id: number, name: string): boolean | Promise<any> | void;
+        (id: number, name: string): boolean | PromiseOptions | void;
     }
 
     /**
@@ -1044,7 +1089,7 @@ declare namespace FineUploader {
         /**
          * @param Blob blob : An object encapsulating the image pasted from the clipboard
          */
-        (blob: Blob): Promise<any> | void;
+        (blob: Blob): PromiseOptions | void;
     }
 
     /**
@@ -1104,7 +1149,7 @@ declare namespace FineUploader {
          * @param number id : The current file's id
          * @param string name : The current file's name
          */
-        (id: number, name: string): boolean | Promise<any> | void;
+        (id: number, name: string): boolean | PromiseOptions | void;
     }
 
     /**
@@ -1114,7 +1159,7 @@ declare namespace FineUploader {
         /**
          * @param number id : The current file's id
          */
-        (id: number): Promise<any> | void;
+        (id: number): PromiseOptions | void;
     }
 
     /**
@@ -1219,7 +1264,7 @@ declare namespace FineUploader {
          * @param BlobDataObject data : An object with a name and size property
          * @param HTMLElement buttonContainer : The button corresponding to the respective file if the file was submitted to Fine Uploader using a tracked button
          */
-        (data: BlobDataObject, buttonContainer?: HTMLElement): Promise<any> | void;
+        (data: BlobDataObject, buttonContainer?: HTMLElement): PromiseOptions | void;
     }
 
     /**
@@ -1230,7 +1275,7 @@ declare namespace FineUploader {
          * @param BlobDataObject[] fileOrBlobDataArray : An array of Objects with name and size properties
          * @param HTMLElement buttonContainer : The button corresponding to the respective file if the file was submitted to Fine Uploader using a tracked button
          */
-        (fileOrBlobDataArray: BlobDataObject[], buttonContainer: HTMLElement): Promise<any> | void;
+        (fileOrBlobDataArray: BlobDataObject[], buttonContainer: HTMLElement): PromiseOptions | void;
     }
 
     /**
@@ -1551,28 +1596,28 @@ declare namespace FineUploader {
     }
 
     /**
-     * function for showMessage option
+     * function for `showMessage` option
      */
     interface ShowMessageFunction {
-        (message: string): Promise<any> | void;
+        (message: string): PromiseOptions | void;
     }
 
     /**
-     * function for showMessage option
+     * function for `showConfirm` option
      */
     interface ShowConfirmFunction {
-        (message: string): Promise<any> | void;
+        (message: string): PromiseOptions | void;
     }
 
     /**
-     * function for showMessage option
+     * function for `showPrompt` option
      */
     interface ShowPromptFunction {
-        (message: string, defaultValue: string | number): Promise<any> | void;
+        (message: string, defaultValue: string | number): PromiseOptions | void;
     }
 
     /**
-     * This interface defines UI specific options for the core DeleteFileOptions
+     * This interface defines UI specific options for the core `DeleteFileOptions`
      */
     interface UIDeleteFileOptions extends DeleteFileOptions {
         /**
@@ -1950,12 +1995,17 @@ declare namespace FineUploader {
         /**
          * The FineUploader Core only constructor
          */
-        FineUploaderBasic(fineuploaderOptions: CoreOptions): void;
+        FineUploaderBasic(fineuploaderOptions?: CoreOptions): void;
 
         /**
          * The FineUploader Core + UI constructor
          */
-        FineUploader(fineuploaderOptions: UIOptions): void;
+        FineUploader(fineuploaderOptions?: UIOptions): void;
+
+        /**
+         * FineUploader's Promise implementation
+         */
+        Promise(): void;
 
         /**
          * Submit one or more files to the uploader
@@ -2019,7 +2069,7 @@ declare namespace FineUploader {
          * @returns Promise: Fulfilled by passing the container back into the success callback after the thumbnail has been rendered. 
          *                   If the thumbnail cannot be rendered, failure callbacks will be invoked instead, passing an object with `container` and `error` properties.
          */
-        drawThumbnail(id: number, targetContainer: HTMLElement, maxSize?: number, fromServer?: boolean, customResizer?: CustomResizerCallBack): Promise<any>;
+        drawThumbnail(id: number, targetContainer: HTMLElement, maxSize?: number, fromServer?: boolean, customResizer?: CustomResizerCallBack): PromiseOptions;
 
         /**
          * Returns the button container element associated with a file
@@ -2156,10 +2206,10 @@ declare namespace FineUploader {
          * 
          * @param number id : The id of the image file
          * @param ScaleImageOptions option : Information about the scaled image to generate
-         * @returns Promise<any> : Fulfilled by passing the scaled image as a `Blob` back into the success callback after the original image has been scaled. 
+         * @returns PromiseOptions : Fulfilled by passing the scaled image as a `Blob` back into the success callback after the original image has been scaled. 
          *                         If the scaled image cannot be generated, the failure callback will be invoked instead
          */
-        scaleImage(id: number, options: ScaleImageOptions): Promise<any>;
+        scaleImage(id: number, options: ScaleImageOptions): PromiseOptions;
 
         /**
          * Set custom headers for an upload request. Pass in a file id to make the headers specific to that file
@@ -2620,21 +2670,21 @@ declare namespace FineUploader {
      * type for S3's bucket object property 
      */
     interface BucketFunction {
-        (id: number): Promise<any> | string;
+        (id: number): PromiseOptions | string;
     }
 
     /**
      * type for S3's host object property 
      */
     interface HostFunction {
-        (id: number): Promise<any> | string;
+        (id: number): PromiseOptions | string;
     }
 
     /**
      * type for S3's key object property 
      */
     interface KeyFunction {
-        (id: number): Promise<any> | string;
+        (id: number): PromiseOptions | string;
     }
 
     /**
@@ -2863,7 +2913,7 @@ declare namespace FineUploader {
      * onCredentialsExpired function type
      */
     interface OnCredentialsExpired {
-        (): Promise<any>;
+        (): PromiseOptions;
     }
 
     /**
@@ -2929,12 +2979,12 @@ declare namespace FineUploader {
         /**
          * The FineUploader S3 Core only constructor**
          */
-        FineUploaderBasic(fineuploaderOptions: S3CoreOptions): void;
+        FineUploaderBasic(fineuploaderOptions?: S3CoreOptions): void;
 
         /**
          * The FineUploader S3 Core + UI constructor** 
          */
-        FineUploader(fineuploaderOptions: S3UIOptions): void;
+        FineUploader(fineuploaderOptions?: S3UIOptions): void;
 
         /**
          * Retrieve the S3 bucket name associated with the passed file (id). Note that the bucket name is not available before the file has started uploading
@@ -3046,7 +3096,7 @@ declare namespace FineUploader {
      * AzureBlobPropertyNameFunction
      */
     interface AzureBlobPropertyNameFunction {
-        (id: number): Promise<any> | string;
+        (id: number): PromiseOptions | string;
     }
 
     /**
@@ -3246,16 +3296,16 @@ declare namespace FineUploader {
      * Contains all the Azure methods and events
      */
     interface Azure extends Core {
-        
+
         /**
          * The FineUploader Azure Core only constructor
          */
-        FineUploaderBasic(fineuploaderOptions: AzureCoreOptions): void;
+        FineUploaderBasic(fineuploaderOptions?: AzureCoreOptions): void;
 
         /**
          * The FineUploader Azure Core + UI constructor
          */
-        FineUploader(fineuploaderOptions: AzureUIOptions): void;
+        FineUploader(fineuploaderOptions?: AzureUIOptions): void;
 
         /**
          * Retrieve the blob name with the associated ID
@@ -3299,7 +3349,7 @@ declare namespace FineUploader {
          * @param object newParams : The additional parameters set for the upload request
          * @param number id : A file id to apply these upload success parameters to
          */
-        setUploadSuccessParams(newParams: any, id?: number): void;        
+        setUploadSuccessParams(newParams: any, id?: number): void;
     }
 
     /* ========================================================== END - AZURE ===================================================================== */
